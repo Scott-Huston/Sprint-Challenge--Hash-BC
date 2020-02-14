@@ -25,8 +25,6 @@ def proof_of_work(last_proof):
     print("Searching for next proof")
     proof = 999999999
     
-    # print('last proof: ', last_proof)
-    # print('type: ', type(last_proof))
     encoded = str(last_proof).encode()
     last_hash = hashlib.sha256(encoded).hexdigest()
     found = True
