@@ -29,12 +29,19 @@ def proof_of_work(last_proof):
     # print('type: ', type(last_proof))
     encoded = str(last_proof).encode()
     last_hash = hashlib.sha256(encoded).hexdigest()
-
+    found = True
     while valid_proof(last_hash, proof) is False:
+        # adjust integer number to control reset time
+        if (timer() - start) > 2:
+            found = False
+            break
         proof += 1
 
-    print("Proof found: " + str(proof) + " in " + str(timer() - start))
-    return proof
+    if found:
+        print("Proof found: " + str(proof) + " in " + str(timer() - start))
+        return proof
+    else:
+        return False
 
 
 def valid_proof(last_hash, proof):
@@ -77,14 +84,14 @@ if __name__ == '__main__':
         r = requests.get(url=node + "/last_proof")
         data = r.json()
         new_proof = proof_of_work(data.get('proof'))
+        if new_proof != False:
+            post_data = {"proof": new_proof,
+                        "id": id}
 
-        post_data = {"proof": new_proof,
-                     "id": id}
-
-        r = requests.post(url=node + "/mine", json=post_data)
-        data = r.json()
-        if data.get('message') == 'New Block Forged':
-            coins_mined += 1
-            print("Total coins mined: " + str(coins_mined))
-        else:
-            print(data.get('message'))
+            r = requests.post(url=node + "/mine", json=post_data)
+            data = r.json()
+            if data.get('message') == 'New Block Forged':
+                coins_mined += 1
+                print("Total coins mined: " + str(coins_mined))
+            else:
+                print(data.get('message'))
