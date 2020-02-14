@@ -12,12 +12,11 @@ def get_indices_of_item_weights(weights, length, limit):
     # loop through weights adding complements (key), and indices (value)
     # to hash table, also check if pair exists while looping
     for i, weight in enumerate(weights):
-        print('i: ',i)
-        print('weight: ', weight)
+        # print('i: ',i)
+        # print('weight: ', weight)
         # check if item to be paired with exists
-        if hash_table_retrieve(ht, weight) !=None:
+        if hash_table_retrieve(ht, weight) != None:
             i2 = hash_table_retrieve(ht, weight)
-
             return(i, i2)
             
         complement = limit - weight
